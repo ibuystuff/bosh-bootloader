@@ -47,7 +47,7 @@ func (s StateQuery) CheckFastFails(subcommandFlags []string, state storage.State
 		return err
 	}
 
-	if state.NoDirector && s.propertyName != DirectorAddressPropertyName && s.propertyName != EnvIDPropertyName {
+	if s.propertyName != DirectorAddressPropertyName && s.propertyName != EnvIDPropertyName {
 		return errors.New("Error BBL does not manage this director.")
 	}
 
@@ -89,17 +89,7 @@ func (s StateQuery) Execute(subcommandFlags []string, state storage.State) error
 }
 
 func (s StateQuery) getDirectorAddress(state storage.State) (string, error) {
-	var directorAddress string
-	if state.NoDirector {
-		externalIP, err := s.getEIP(state)
-		if err != nil {
-			return "", err
-		}
-		directorAddress = fmt.Sprintf("https://%s:25555", externalIP)
-	} else {
-		directorAddress = state.BOSH.DirectorAddress
-	}
-	return directorAddress, nil
+	return state.BOSH.DirectorAddress, nil
 }
 
 func (s StateQuery) getEIP(state storage.State) (string, error) {
